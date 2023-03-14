@@ -1,10 +1,12 @@
+import { Container, Heading, Img, Input, Text } from "@chakra-ui/react";
+import { Button, ButtonGroup } from "@chakra-ui/react";
 import axios from "axios";
 import { useEffect, useState } from "react";
 import { Gituser, UserRepoData } from "./components/types";
 
 function App() {
   const [user, setUser] = useState<Gituser>();
-  const [repoData, setrepoData] = useState<UserRepoData>();
+  const [repoData, setrepoData] = useState<UserRepoData[]>();
 
   const [SearchName, setSearchName] = useState<string>("");
   const getData = async () => {
@@ -32,39 +34,54 @@ function App() {
 
   return (
     <>
-      <div>loading github users profile and their activities</div>
-      <form onSubmit={onSubmitHandler}>
-        <input
-          onChange={onChangeHandle}
-          type="text"
-          placeholder="Search for User"
-          className="input_search"
-          name="name"
-        />
-        <button type="submit" className="search_button">
-          Search Github
-        </button>
-      </form>
-      <div className="userInfo">
-        <img src={user?.avatar_url} width="50" alt="" />
-        <h1>User name : {user?.name} </h1>
-        {/* <h2>
-          Lets see most recent activity of  : <a href={user?.html_url} target = "_blank">{user?.login}</a>
-        </h2> */}
-        <ul>
-          <li>Repos :{user?.public_repos} </li>
-          <li>Gists : {user?.public_gists} </li>
-          <li>followers : {user?.followers}</li>
-          <li>following : {user?.following}</li>
-        </ul>
-        <h2>
-          Lets see most recent activity of :{" "}
-          <a href={user?.html_url} target="_blank">
-            {user?.login}
-          </a>
-        </h2>
-         <h1>{JSON.stringify(repoData?.forks_count)} </h1>
-      </div>
+      <Container className="userInfo">
+        <Heading size={"lg"} m={"5"}>
+          github users and their activities
+        </Heading>
+        <form onSubmit={onSubmitHandler}>
+          <Input
+            onChange={onChangeHandle}
+            type="text"
+            placeholder="Search for User"
+            className="input_search"
+            name="name"
+          />
+
+          <Button type="submit" colorScheme="blue">
+            Search Github
+          </Button>
+        </form>
+        <div className="userInfo">
+          <Img src={user?.avatar_url} width="5" alt="" />
+          <Heading size={"md"}>User name : {user?.name} </Heading>
+          <ul>
+            <Text>Repos :{user?.public_repos} </Text>
+            <Text>Gists : {user?.public_gists} </Text>
+            <Text>followers : {user?.followers}</Text>
+            <Text>following : {user?.following}</Text>
+          </ul>
+          <h2>
+            Lets see most recent activity of
+            <a href={user?.html_url} target="_blank">
+              {user?.login}
+            </a>
+          </h2>
+          <ul>
+            {repoData?.map((item) => {
+              return (
+                <>
+                  <li>{item.name} </li>
+                  <li>
+                    <a href={item.html_url} target="_blank">
+                      {item.html_url}
+                    </a>
+                  </li>
+                </>
+              );
+            })}
+          </ul>
+        </div>
+      </Container>
     </>
   );
 }
