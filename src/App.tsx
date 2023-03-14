@@ -10,10 +10,11 @@ import {
   Text,
 } from "@chakra-ui/react";
 import { useState } from "react";
+import CreateEvent from "./components/CreateEvent";
 import { getUser } from "./components/GetUser";
+import PushEvent from "./components/PushEvent";
 import { Gituser, UserActivity } from "./components/types";
 import { getEventData } from "./components/UserEventData";
-import UserEvents from "./components/UserEvents";
 
 function App() {
   const [user, setUser] = useState<Gituser>();
@@ -45,6 +46,8 @@ function App() {
             onChange={onChangeHandle}
             type="text"
             placeholder="Search for User"
+            _placeholder={{ color: "black.500" }}
+            bg="white"
             className="input_search"
             name="name"
           />
@@ -100,7 +103,11 @@ function App() {
         </Text>
         <ul>
           {eventData?.map((event) => {
-            return <UserEvents key={event.id} event={event} />;
+            if (event.type == "PushEvent") {
+              return <PushEvent key={event.id} event={event} />;
+            } else {
+              return <CreateEvent key={event.id} event={event} />;
+            }
           })}
         </ul>
       </Container>
