@@ -1,4 +1,14 @@
-import { Button, Container, Heading, Img, Input, Text } from "@chakra-ui/react";
+import {
+  Button,
+  Container,
+  Grid,
+  GridItem,
+  Heading,
+  Image,
+  Img,
+  Input,
+  Text,
+} from "@chakra-ui/react";
 import { useState } from "react";
 import { getUser } from "./components/GetUser";
 import { Gituser, UserActivity } from "./components/types";
@@ -20,15 +30,15 @@ function App() {
     const user = await getUser(searchName);
     setUser(user);
 
-    const userEvents = await getEventData();
+    const userEvents = await getEventData(searchName);
     setEventData(userEvents);
   };
 
   return (
     <>
       <Container className="userInfo">
-        <Heading size={"lg"} m={"5"}>
-          github users and their activities
+        <Heading textAlign={"center"} size={"lg"} m={"5"}>
+          GitHat
         </Heading>
         <form onSubmit={onSubmitHandler}>
           <Input
@@ -39,31 +49,60 @@ function App() {
             name="name"
           />
 
-          <Button type="submit" colorScheme="blue">
+          <Button
+            marginLeft={157}
+            marginTop={15}
+            type="submit"
+            colorScheme="blue"
+          >
             Search Github
           </Button>
+          <br />
+          <br />
         </form>
         <div className="userInfo">
-          <Img src={user?.avatar_url} width="5" alt="" />
-          <Heading size={"md"}>User name : {user?.name} </Heading>
-          <ul>
-            <Text>Repos :{user?.public_repos} </Text>
-            <Text>Gists : {user?.public_gists} </Text>
-            <Text>followers : {user?.followers}</Text>
-            <Text>following : {user?.following}</Text>
-          </ul>
-          <h2>
-            Lets see most recent activity of
-            <a href={user?.html_url} target="_blank">
-              {user?.login}
-            </a>
-          </h2>
-          <ul>
-            {eventData?.map((event) => {
-              return <UserEvents key={event.id} event={event} />;
-            })}
-          </ul>
+          <Image
+            marginLeft={157}
+            marginTop={15}
+            borderRadius="full"
+            boxSize="150px"
+            src={user?.avatar_url}
+            alt=""
+          />
+
+          <Heading marginTop={2} marginBottom={2} size={"md"}>
+            User name : {user?.name}{" "}
+          </Heading>
+
+          <Grid templateColumns="repeat(4, 1fr)" gap={4}>
+            <GridItem borderRadius={5} p={2} w="100%" h="10" bg="blue.500">
+              {" "}
+              Repos :{user?.public_repos}{" "}
+            </GridItem>
+            <GridItem borderRadius={5} p={2} w="100%" h="10" bg="blue.500">
+              {" "}
+              Gists : {user?.public_gists}{" "}
+            </GridItem>
+            <GridItem borderRadius={5} p={2} w="100%" h="10" bg="blue.500">
+              followers : {user?.followers}{" "}
+            </GridItem>
+            <GridItem borderRadius={5} p={2} w="100%" h="10" bg="blue.500">
+              {" "}
+              following : {user?.following}
+            </GridItem>
+          </Grid>
         </div>
+        <Text marginTop={2}>
+          Lets see most recent activity of &nbsp;
+          <a href={user?.html_url} target="_blank">
+            {user?.login}
+          </a>
+        </Text>
+        <ul>
+          {eventData?.map((event) => {
+            return <UserEvents key={event.id} event={event} />;
+          })}
+        </ul>
       </Container>
     </>
   );
