@@ -5,25 +5,21 @@ import { Gituser } from "./components/types";
 function App() {
   const [user, setUser] = useState<Gituser>();
   const [SearchName, setSearchName] = useState<string>("");
- 
+  const getData = async () => {
+    const res = await axios.get(`https://api.github.com/users/${SearchName}`);
+    console.log(res.data);
+    setUser(res.data);
+  };
   const onChangeHandle = (e: any) => {
     e.preventDefault();
     console.log(e.target.value);
     setSearchName(e.target.value);
   };
-  const onSubmitHandler =async (e:any) => {
+  const onSubmitHandler = (e: any) => {
     e.preventDefault();
-    try {
-      const res = await axios.get(`https://api.github.com/users/${SearchName}`);
-      console.log(res.data);
-      setUser(res.data);
-      
-    } catch (error) {
-      console.error(error);
-      
-    }
+
+    getData();
   };
- 
 
   return (
     <>
@@ -35,23 +31,25 @@ function App() {
           placeholder="Search for User"
           className="input_search"
           name="name"
-          // value={SearchName}
+         
         />
         <button type="submit" className="search_button">
           Search Github
         </button>
       </form>
-      {/* {
-      user.map((post)=>{
-        const {id, title , body} = post;
-          return <div className="post" key={id} >
-              <h1>{title} </h1>
-              <p> {body} </p>
-          </div>
-
-      })
-     } */}
-      {<h1> {user?.name} </h1>}
+      <div className="userInfo">
+        <img src={user?.avatar_url} width="50" alt="" />
+        <h1>User name : {user?.name} </h1>
+        <h2>
+          Lets see most recent activity of  : <a href={user?.html_url} target = "_blank">{user?.login}</a>
+        </h2>
+        <ul>
+          <li>Repos :{user?.public_repos} </li>
+          <li>Gists : {user?.public_gists} </li>
+          <li>followers : {user?.followers}</li>
+          <li>following : {user?.following}</li>
+        </ul>
+      </div>
     </>
   );
 }
