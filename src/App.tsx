@@ -1,35 +1,27 @@
-import { Container, Heading, Img, Input, Text } from "@chakra-ui/react";
-import { Button, ButtonGroup } from "@chakra-ui/react";
-import axios from "axios";
-import { useEffect, useState } from "react";
-import { Gituser, UserRepoData } from "./components/types";
+import { Button, Container, Heading, Img, Input, Text } from "@chakra-ui/react";
+import { useState } from "react";
+import { getUser } from "./components/GetUser";
+import { Gituser, UserActivity } from "./components/types";
+import { getEventData } from "./components/UserEventData";
+import UserEvents from "./components/UserEvents";
 
 function App() {
   const [user, setUser] = useState<Gituser>();
-  const [repoData, setrepoData] = useState<UserRepoData[]>();
+  const [eventData, setEventData] = useState<UserActivity[]>();
+  const [searchName, setSearchName] = useState<string>("");
 
-  const [SearchName, setSearchName] = useState<string>("");
-  const getData = async () => {
-    const res = await axios.get(`https://api.github.com/users/${SearchName}`);
-    console.log(res.data);
-    setUser(res.data);
-  };
-  const getRepoData = async () => {
-    const repores = await axios.get(
-      "https://api.github.com/users/ravidhwn01/repos"
-    );
-    console.log(repores.data);
-    setrepoData(repores.data);
-  };
   const onChangeHandle = (e: any) => {
     e.preventDefault();
     console.log(e.target.value);
     setSearchName(e.target.value);
   };
-  const onSubmitHandler = (e: any) => {
+  const onSubmitHandler = async (e: any) => {
     e.preventDefault();
-    getData();
-    getRepoData();
+    const user = await getUser(searchName);
+    setUser(user);
+
+    const userEvents = await getEventData();
+    setEventData(userEvents);
   };
 
   return (
@@ -67,17 +59,8 @@ function App() {
             </a>
           </h2>
           <ul>
-            {repoData?.map((item) => {
-              return (
-                <>
-                  <li>{item.name} </li>
-                  <li>
-                    <a href={item.html_url} target="_blank">
-                      {item.html_url}
-                    </a>
-                  </li>
-                </>
-              );
+            {eventData?.map((event) => {
+              return <UserEvents key={event.id} event={event} />;
             })}
           </ul>
         </div>
